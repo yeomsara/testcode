@@ -53,3 +53,17 @@ def rs_data_insert(query,df):
     conn.commit()
     curs.close()
     conn.close()
+
+### oracle (cx_Oracle)
+
+def Oracle_select(query):
+    import cx_Oracle
+    import pandas.io.sql as psql
+    conn = cx_Oracle.connect(DBID,DBPW,DBSID)
+    query= query
+    df = psql.read_sql(query,conn)
+    conn.commit()
+    cur.close()
+    conn.close()
+    return df
+
