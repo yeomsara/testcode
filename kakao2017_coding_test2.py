@@ -17,8 +17,19 @@
 #8. Single(S), Double(D), Triple(T)은 점수마다 하나씩 존재한다.9 스타상(*), 아차상(#)은 점수마다 둘 중 하나만 존재할 수 있으며, 존재하지 않을 수도 있다.
 #9. 0~10의 정수와 문자 S, D, T, *, #로 구성된 문자열이 입력될 시 총점수를 반환하는 함수를 작성하라.
 
+# =======================================================================================================
+## 다양한 방법이 존재하지만 중첩되는 option의 효과가 들어가 있기에
+## option이 몇번째 게임에 붙어있는 것인지를 체크하기 위한 함수로 옵션이 터진 게임의 위치를 찾아서 반환해주는
+## 방법으로 로직접근
+# =======================================================================================================
 def find_option_index(opt_index_list,score_index,score_list):
     opt_index = []
+    # 먼저 옵션이 1개인지 2개이상인지 체크 ( 2개 이상일 경우 두 옵션의 위치를 모두 찾아서 반환)
+    # 옵션의 위치를 찾는 기준은 간단하다
+    # 각 스코어의 index를 찾아서 1~3게임 사이의 인덱스의 사이값이 옵션의 index와 일치하면 
+    # 1,2번째 위치를 넣어주고 마지막 게임의 옵션이라면 score_list의 len-1과 인덱스가 일치할 것임
+    # 0 : 첫번째 게임옵션 / 1: 두번째 게임옵션 / 2: 세번째 게임옵션 
+    # 여기서 찾은 옵션의 위치값으로 보너스점수를 계산할때 사용한다.
     if len(opt_index_list) > 1:
         for i in opt_index_list :
             if score_index[0][1] < i < score_index[1][0]:
@@ -39,23 +50,32 @@ def find_option_index(opt_index_list,score_index,score_list):
 
     return opt_index
 
+#===============================================================================================
+## 위의 'find_option_index' function에서 option의 인덱스를 찾아 반환해주면
+## 'calc_option' 함수에서 최종계산하여 result score값을 계산해줌
+#===============================================================================================
 def calc_option(score_list):
+    # 1~3게임의 스코어 인덱스(위치)를 반환한다, 옵션이 어떤 게임뒤에붙는지 찾아낼때 사용
     score_index   = [[m.start(),m.end()] for m in re.finditer(r'[0-9]+', score_list)]
+    # score의 점수 
     score         = [int(m[0]) for m in re.finditer(r'[0-9]+', score_list)]
-    ## score의 카테고리를 찾아 변환
+    ## score의 카테고리
     score_cat     = [m[0] for m in re.finditer(r'[a-zA-Z]+', score_list)]
+    # single이면 :1 / double이면 : 2 / Triple이면 : 3
     cat_dic       = {'S':1,'D':2,'T':3}
     score_cat_pow = [cat_dic.get(n,n) for n in score_cat]
-    ## score option점수 계산 
+    ## score option 위치 찾기 
     star_index    = [m.start() for m in re.finditer('\*', score_list)]
     miss_index    = [m.start() for m in re.finditer('\#', score_list)]
+    # 옵션이 *일경우 *2 #일경우 -1을 해주기위한 옵션 점수변환
     option_dic    = {'*':2,'#':-1}
     option_index  = star_index+miss_index
     option_list   = [score_list[i] for i in option_index]
-    ## * 이면 2 #이면 -1을 보너스점수로 
+    ## * 이면 2 #이면 -1을 보너스점수로 변환 
     option_calc   = [option_dic.get(n,n) for n in option_list]
-
+    # 옵션의 인덱스를 던져주고 어느게임의 옵션인지를 반환해옴
     comp_option_index = find_option_index(option_index,score_index,score_list)
+    # 계산을위한 score와 카테고리의 제곱값을 계산해서 넘겨줌
     calc_score = [pow(score[i],score_cat_pow[i]) for i in range(0,len(score))]
 
     result_score = 0
