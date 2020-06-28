@@ -26,3 +26,4 @@ def jumpingOnClouds(c):
         zero[len(c)-1] = 1
     #최종 점프횟수 sum 한후 결과 return
     return sum(zero)
+
