@@ -21,7 +21,7 @@ query <- paste0("SELECT A.id,A.header,A.text
                 WHERE A.date = '",to,"' and B.id is null") ## 쿼리작성
 # query <- paste0("SELECT id,header,text from blog_raw WHERE date = '2017-03-09'")
 require(RMySQL)
-con <- dbConnect(MySQL(), user="root", password="20110104",dbname="leadnet",host="192.168.0.21") ## DB 접속
+con <- dbConnect(MySQL(), user="root", password="**",dbname="**",host="**") ## DB 접속
 dbGetQuery(con, "set names utf8") ## DB Charset UTF-8로 변경
 data <- dbGetQuery(con, query) ## 데이터 받아오기
 dbDisconnect(con) ## 연결 해제
@@ -51,7 +51,7 @@ if (length(data) != 0){ ## 데이터 존재 시
   summary$regdate <- as.character(Sys.time())
   ## DB Upload
   require(RMySQL)
-  con <- dbConnect(MySQL(), user="root", password="20110104",dbname="leadnet",host="192.168.0.21") ## DB 접속
+  con <- dbConnect(MySQL(), user="root", password="**",dbname="**",host="**") ## DB 접속
   dbGetQuery(con,"set names utf8")
   dbWriteTable(con, "blog_summary", summary, append=T, row.names=F)
   dbSendQuery(con,paste0("UPDATE blog_summary SET summary1 = REPLACE(summary1,'&quot;','') WHERE summary1 like '%&quot;%' "))
